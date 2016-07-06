@@ -6,7 +6,7 @@ pollutantmean <- function(directory, pollutant, id =1:332) {
     
     # Loop through the 'id' vector to read & append all files into one data frame
     for (fileid in id) {
-        filename <- getfilename(fileid)
+        filename <- getfilename(fileid, directory)
         newdataframe <- read.csv(filename)
         alldataframe <- rbind(alldataframe, newdataframe)
     }
@@ -24,9 +24,9 @@ pollutantmean <- function(directory, pollutant, id =1:332) {
 }
 
 # Function to generate the filename corresponding to a specific id
-getfilename <- function(fileid) {
-    absfilepath <- "C:/github-repos/datasciencecoursera/r-programing-week2-lesson4/specdata/"
-    filename <- paste(c(absfilepath, fileprefix(fileid), fileid, ".csv"), sep="", collapse = "")
+getfilename <- function(fileid, directory) {
+    absfilepath <- "C:/github-repos/datasciencecoursera/r-programing-week2-lesson4/"
+    filename <- paste(c(absfilepath, directory, "/", fileprefix(fileid), fileid, ".csv"), sep="", collapse = "")
     filename
 }
 
