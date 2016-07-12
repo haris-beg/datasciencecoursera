@@ -3,7 +3,11 @@
 ## It checks for valid state and outcome values passed as arguments to this function.
 ## State must be a standard 2-character abbreviation in the US.
 ## Outcome must be one of "heart attack", "heart failure", or "pneumonia".
-options(warn = -1) # Suppress warnings globally
+
+# Suppress warnings globally
+oldw <- getOption("warn")
+options(warn = -1) 
+
 best <- function(state, outcome) {
     ## Read outcome data
     outcomeDf <- read.csv("outcome-of-care-measures.csv", colClasses = "character")
@@ -36,3 +40,5 @@ best <- function(state, outcome) {
     bestHospitals <- sort(minRow$Hospital.Name)
     return(bestHospitals[1])
 }
+# Unsuppress warnings
+options(warn = oldw) 
