@@ -68,13 +68,8 @@ bestHeartAttackHospitalInState <- function(stateMatchDf) {
                             min(as.numeric(stateMatchDf$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack), na.rm = TRUE))
     ## Get the rows corresponding to the index(es) for the hospital(s)
     numRowDf <- stateMatchDf[numIndices,]
-    ## If more than one hospital matches the criteria, then return the first one in alphabetical sort order
-    matchingHospitals <- sort(numRowDf$Hospital.Name)
-    ## Get the state abbreviation
-    matchingStates <- stateMatchDf$State
-    matchingStates <- matchingStates[!is.na(matchingStates)]
-    ## return a vector containing the selected hospital and the state abbreviation
-    return(c(hospital = matchingHospitals[1], state = matchingStates[1]))
+    ## return a vector containing the matching hospital and the state abbreviation
+    return(getHospitalAndState(stateMatchDf, numRowDf))
 }
 
 ## This function returns the worst hospital for heart attack in the passed list
@@ -84,13 +79,8 @@ worstHeartAttackHospitalInState <- function(stateMatchDf) {
                             max(as.numeric(stateMatchDf$Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack), na.rm = TRUE))
     ## Get the rows corresponding to the index(es) for the hospital(s)
     numRowDf <- stateMatchDf[numIndices,]
-    ## If more than one hospital matches the criteria, then return the first one in alphabetical sort order
-    matchingHospitals <- sort(numRowDf$Hospital.Name)
-    ## Get the state abbreviation
-    matchingStates <- stateMatchDf$State
-    matchingStates <- matchingStates[!is.na(matchingStates)]
-    ## return a vector containing the selected hospital and the state abbreviation
-    return(c(hospital = matchingHospitals[1], state = matchingStates[1]))
+    ## return a vector containing the matching hospital and the state abbreviation
+    return(getHospitalAndState(stateMatchDf, numRowDf))
 }
 
 ## This function returns the hospital with a specific rank for heart attack in the passed list
@@ -98,8 +88,14 @@ rankedHeartAttackHospitalInState <- function(stateMatchDf, rank) {
     ## Sort the state-specific data frame on the outcome column (primary) and hospital name column (secondary)
     stateMatchDf <- stateMatchDf[with(stateMatchDf, order(as.numeric(Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack), 
                                                           Hospital.Name, na.last = TRUE)), ]
-    ## Get the rows corresponding to the index for the hospital(s)
+    ## Get the rows corresponding to the rank for the hospital(s)
     numRowDf <- stateMatchDf[rank,]
+    ## return a vector containing the matching hospital and the state abbreviation
+    return(getHospitalAndState(stateMatchDf, numRowDf))
+}
+
+## This function returns a vector containing the matching hospital and the state abbreviation
+getHospitalAndState <- function(stateMatchDf, numRowDf) {
     ## If more than one hospital matches the criteria, then return the first one in alphabetical sort order
     matchingHospitals <- sort(numRowDf$Hospital.Name)
     ## Get the state abbreviation
