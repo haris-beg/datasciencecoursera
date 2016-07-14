@@ -50,12 +50,18 @@ rankall <- function(outcome, num = "best") {
     else if (outcome == "pneumonia") {
         if (num == "best") {
             ## Get the best hospital in each state for 30-day pneumonia death rates.
+            results <- lapply(splitOutcomeDf, bestPneumoniaHospitalInState)
+            as.data.frame(do.call(rbind, results))
         }
         else if (num == "worst") {
             ## Get the worst hospital in each state for 30-day pneumonia death rates.
+            results <- lapply(splitOutcomeDf, worstPneumoniaHospitalInState)
+            as.data.frame(do.call(rbind, results))
         }
         else {
             ## Get the hospital in each state with rank equal to 'num' for 30-day pneumonia death rates.
+            results <- lapply(splitOutcomeDf, rankedPneumoniaHospitalInState, num)
+            as.data.frame(do.call(rbind, results))
         }
     }
     else {
@@ -124,6 +130,39 @@ worstHeartFailureHospitalInState <- function(stateMatchDf) {
 rankedHeartFailureHospitalInState <- function(stateMatchDf, rank) {
     ## Sort the state-specific data frame on the outcome column (primary) and hospital name column (secondary)
     stateMatchDf <- stateMatchDf[with(stateMatchDf, order(as.numeric(Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure), 
+                                                          Hospital.Name, na.last = TRUE)), ]
+    ## Get the rows corresponding to the rank for the hospital(s)
+    numRowDf <- stateMatchDf[rank,]
+    ## return a vector containing the matching hospital and the state abbreviation
+    return(getHospitalAndState(stateMatchDf, numRowDf))
+}
+
+## This function returns the best hospital for pneumonia in the passed list
+bestPneumoniaHospitalInState <- function(stateMatchDf) {
+    ## Obtain the indices for the hospitals having the lowest (best) outcome in the state
+    numIndices <- which(as.numeric(stateMatchDf$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia) == 
+                            min(as.numeric(stateMatchDf$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia), na.rm = TRUE))
+    ## Get the rows corresponding to the index(es) for the hospital(s)
+    numRowDf <- stateMatchDf[numIndices,]
+    ## return a vector containing the matching hospital and the state abbreviation
+    return(getHospitalAndState(stateMatchDf, numRowDf))
+}
+
+## This function returns the worst hospital for pneumonia in the passed list
+worstPneumoniaHospitalInState <- function(stateMatchDf) {
+    ## Obtain the indices for the hospitals having the highest (worst) outcome in the state
+    numIndices <- which(as.numeric(stateMatchDf$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia) == 
+                            max(as.numeric(stateMatchDf$Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia), na.rm = TRUE))
+    ## Get the rows corresponding to the index(es) for the hospital(s)
+    numRowDf <- stateMatchDf[numIndices,]
+    ## return a vector containing the matching hospital and the state abbreviation
+    return(getHospitalAndState(stateMatchDf, numRowDf))
+}
+
+## This function returns the hospital with a specific rank for pneumonia in the passed list
+rankedPneumoniaHospitalInState <- function(stateMatchDf, rank) {
+    ## Sort the state-specific data frame on the outcome column (primary) and hospital name column (secondary)
+    stateMatchDf <- stateMatchDf[with(stateMatchDf, order(as.numeric(Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia), 
                                                           Hospital.Name, na.last = TRUE)), ]
     ## Get the rows corresponding to the rank for the hospital(s)
     numRowDf <- stateMatchDf[rank,]
