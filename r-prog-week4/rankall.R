@@ -17,58 +17,49 @@ rankall <- function(outcome, num = "best") {
         if (num == "best") {
             ## Get the best hospital in each state for 30-day heart attack death rates.
             results <- lapply(splitOutcomeDf, bestHeartAttackHospitalInState)
-            as.data.frame(do.call(rbind, results))
         }
         else if (num == "worst") {
             ## Get the worst hospital in each state for 30-day heart attack death rates.
             results <- lapply(splitOutcomeDf, worstHeartAttackHospitalInState)
-            as.data.frame(do.call(rbind, results))
         }
         else {
             ## Get the hospital in each state with rank equal to 'num' for 30-day heart attack death rates.
             results <- lapply(splitOutcomeDf, rankedHeartAttackHospitalInState, num)
-            as.data.frame(do.call(rbind, results))
         }
     }
     else if (outcome == "heart failure") {
         if (num == "best") {
             ## Get the best hospital in each state for 30-day heart failure death rates.
             results <- lapply(splitOutcomeDf, bestHeartFailureHospitalInState)
-            as.data.frame(do.call(rbind, results))
         }
         else if (num == "worst") {
             ## Get the worst hospital in each state for 30-day heart failure death rates.
             results <- lapply(splitOutcomeDf, worstHeartFailureHospitalInState)
-            as.data.frame(do.call(rbind, results))
         }
         else {
             ## Get the hospital in each state with rank equal to 'num' for 30-day heart failure death rates.
             results <- lapply(splitOutcomeDf, rankedHeartFailureHospitalInState, num)
-            as.data.frame(do.call(rbind, results))
         }
     }
     else if (outcome == "pneumonia") {
         if (num == "best") {
             ## Get the best hospital in each state for 30-day pneumonia death rates.
             results <- lapply(splitOutcomeDf, bestPneumoniaHospitalInState)
-            as.data.frame(do.call(rbind, results))
         }
         else if (num == "worst") {
             ## Get the worst hospital in each state for 30-day pneumonia death rates.
             results <- lapply(splitOutcomeDf, worstPneumoniaHospitalInState)
-            as.data.frame(do.call(rbind, results))
         }
         else {
             ## Get the hospital in each state with rank equal to 'num' for 30-day pneumonia death rates.
             results <- lapply(splitOutcomeDf, rankedPneumoniaHospitalInState, num)
-            as.data.frame(do.call(rbind, results))
         }
     }
     else {
         ## Check that outcome is valid
         stop("invalid outcome")
     }
-    
+    return(as.data.frame(do.call(rbind, results)))
 }
 
 ## This function returns the best hospital for heart attack in the passed list
